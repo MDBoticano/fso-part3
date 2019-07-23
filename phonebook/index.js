@@ -1,14 +1,29 @@
+/* Imports */
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
+
+/* Middleware */
 app.use(bodyParser.json())
 
 morgan.token('body', (request) =>  {
   return JSON.stringify(request.body)
 })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+
+app.use(cors())
+
+app.use(requestLogger)
 
 let persons = [
   {
