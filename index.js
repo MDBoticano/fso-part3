@@ -27,17 +27,17 @@ app.use(requestLogger)
 app.use(express.static('build'))
 
 /* Helper Functions: need to modify to work with MongoDB */
-persons = []
+// persons = []
 
-const nameExists = (name) => {
-  let existingNames = persons.map(person => person.name.toLowerCase());
-  return existingNames.includes(name.toLowerCase());
-}
+// const nameExists = (name) => {
+//   let existingNames = persons.map(person => person.name.toLowerCase());
+//   return existingNames.includes(name.toLowerCase());
+// }
 
-const numberExists = (number) => {
-  let existingNumbers = persons.map(person => person.number);
-  return existingNumbers.includes(number);
-}
+// const numberExists = (number) => {
+//   let existingNumbers = persons.map(person => person.number);
+//   return existingNumbers.includes(number);
+// }
 
 /* Routes */
 /* GET: root (no MongoDB connection) */
