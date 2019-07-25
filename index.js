@@ -45,13 +45,14 @@ app.get('/api/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
-/* GET: info (no MongoDB connection) */
+/* GET: info (count and date of request) */
 app.get('/info', (request, response) => {
-  let dateOfRequest = new Date();
-  let numEntries = persons.length;
-  let infoString = 'Phonebook has info for ' + numEntries + ' people'
-  
-  response.send('<p>' + infoString + '</p>' + '<p>' + dateOfRequest + '</p>')
+  Person.find({}).then(persons => { 
+    let dateOfRequest = new Date()
+    let numEntries = persons.length 
+    let infoString = 'Phonebook has info for ' + numEntries + ' people'
+    response.send('<p>' + infoString + '</p>' + '<p>' + dateOfRequest + '</p>')
+  })  
 })
 
 /* GET: all persons */
@@ -73,13 +74,15 @@ app.get('/api/persons/:id', (request, response, next) => {
       }
     })
     .catch(error => {
-      console.log('Object Id format is incorrect')
+      // console.log('Object Id format is incorrect')
       next(error)
     })
 })
 
 /* POST: add new entry */
 app.post('/api/persons', (request, response) => {
+  console.log('posting')
+  
   const body = request.body
 
   // if(!body.name || !body.number) {
@@ -98,6 +101,7 @@ app.post('/api/persons', (request, response) => {
   
   // Step 1: Name check -- does name exist? //
   // can pull all data and set it to state to keep function
+  // get ID of existing name, then just use that and body to PUT instead
 
   const person = new Person({
     name: body.name,
@@ -121,6 +125,8 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 /* PUT: update an existing entry */
 app.put('/api/persons/:id', (request, response, next) => {
+  console.log('putting')
+  
   const body = request.body
 
   const person = {
