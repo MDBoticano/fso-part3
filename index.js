@@ -26,19 +26,6 @@ app.use(requestLogger)
 
 app.use(express.static('build'))
 
-/* Helper Functions: need to modify to work with MongoDB */
-// persons = []
-
-// const nameExists = (name) => {
-//   let existingNames = persons.map(person => person.name.toLowerCase());
-//   return existingNames.includes(name.toLowerCase());
-// }
-
-// const numberExists = (number) => {
-//   let existingNumbers = persons.map(person => person.number);
-//   return existingNumbers.includes(number);
-// }
-
 /* Routes */
 /* GET: root (no MongoDB connection) */
 app.get('/api/', (request, response) => {
@@ -80,28 +67,10 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 /* POST: add new entry */
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   console.log('posting')
   
   const body = request.body
-
-  // if(!body.name || !body.number) {
-  //   return response.status(400).json({
-  //     error: "missing content"
-  //   })
-  // } else if (nameExists(body.name)) {
-  //   return response.status(400).json({
-  //     error: "name must be unique"
-  //   })
-  // } else if (numberExists(body.number)) {
-  //   return response.status(400).json({
-  //     error: "number must be unique"
-  //   })
-  // }
-  
-  // Step 1: Name check -- does name exist? //
-  // can pull all data and set it to state to keep function
-  // get ID of existing name, then just use that and body to PUT instead
 
   const person = new Person({
     name: body.name,
@@ -109,9 +78,11 @@ app.post('/api/persons', (request, response) => {
     date: new Date()
   })
 
-  person.save().then(savedPerson => {
-    response.json(savedPerson.toJSON())
-  })
+  person
+    .save()
+    .then(savedPerson => savedPerson.toJSON())
+    .then(savedAndFormattedPerson => { response.json(savedAndFormattedPerson) })
+    .catch(error => next(error))
 })
 
 /* DELETE: removes specific entry by id */
@@ -152,6 +123,8 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message)
   if (error.name === 'CastError' && error.kind == 'ObjectId') {
     return response.status(400).send({ error: 'incorrect id format' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
 }
 app.use(errorHandler)
