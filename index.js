@@ -44,6 +44,7 @@ app.get('/info', (request, response) => {
 
 /* GET: all persons */
 app.get('/api/persons', (request, response) => {
+  console.log('GET: getting all entries')
   Person.find({}).then(persons => {
     response.json(persons)
   })
@@ -51,6 +52,7 @@ app.get('/api/persons', (request, response) => {
 
 /* GET: specific id */
 app.get('/api/persons/:id', (request, response, next) => {
+  console.log('GET: getting entry by id')
   Person.findById(request.params.id)
     .then(person => {
       if (person) {
@@ -68,7 +70,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 /* POST: add new entry */
 app.post('/api/persons', (request, response, next) => {
-  console.log('posting')
+  console.log('POST: adding entry')
   
   const body = request.body
 
@@ -87,6 +89,7 @@ app.post('/api/persons', (request, response, next) => {
 
 /* DELETE: removes specific entry by id */
 app.delete('/api/persons/:id', (request, response, next) => {
+  console.log('DELETE: deleting entry')
   Person.findByIdAndRemove(request.params.id)
     .then(result => {
       response.status(204).end()
@@ -96,7 +99,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 /* PUT: update an existing entry */
 app.put('/api/persons/:id', (request, response, next) => {
-  console.log('putting')
+  console.log('PUT: Updating entry')
   
   const body = request.body
 
@@ -106,10 +109,12 @@ app.put('/api/persons/:id', (request, response, next) => {
   }
 
   Person.findByIdAndUpdate(request.params.id, person, { new: true })
-    .then(updatedEntry => {
-      response.json(updatedEntry.toJSON())
+    .then(updatedEntry => { (updatedEntry.toJSON()) })
+    .then(updatedAndFormattedEntry => {response.json(updatedAndFormattedEntry)})
+    .catch(error => {
+      console.log("error in backend: index.js PUT")
+      next(error)
     })
-    .catch(error => next(error))
 })
 
 /* Middleware: unknown endpoint. DONT PUT ROUTES AFTER THIS!!! */
