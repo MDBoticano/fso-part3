@@ -109,12 +109,10 @@ app.put('/api/persons/:id', (request, response, next) => {
   }
 
   Person.findByIdAndUpdate(request.params.id, person, { new: true })
-    .then(updatedEntry => { (updatedEntry.toJSON()) })
-    .then(updatedAndFormattedEntry => {response.json(updatedAndFormattedEntry)})
-    .catch(error => {
-      console.log("error in backend: index.js PUT")
-      next(error)
+    .then(updatedEntry => {
+      response.json(updatedEntry.toJSON())
     })
+    .catch(error => next(error))
 })
 
 /* Middleware: unknown endpoint. DONT PUT ROUTES AFTER THIS!!! */
