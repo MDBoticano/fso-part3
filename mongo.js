@@ -32,7 +32,7 @@ if (process.argv.length === 5) {
     console.log('Entry saved!')
     mongoose.connection.close()
   })
-} 
+}
 // Print out phonebook persons if 3 arguments
 else if (process.argv.length === 3) {
   Person.find({}).then(result => {

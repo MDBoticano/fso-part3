@@ -21,9 +21,8 @@ morgan.token('body', (request) =>  {
 
 app.use(bodyParser.json())
 app.use(cors())
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(requestLogger)
-
 app.use(express.static('build'))
 
 /* Routes */
@@ -34,12 +33,12 @@ app.get('/api/', (request, response) => {
 
 /* GET: info (count and date of request) */
 app.get('/info', (request, response) => {
-  Person.find({}).then(persons => { 
+  Person.find({}).then(persons => {
     let dateOfRequest = new Date()
-    let numEntries = persons.length 
+    let numEntries = persons.length
     let infoString = 'Phonebook has info for ' + numEntries + ' people'
     response.send('<p>' + infoString + '</p>' + '<p>' + dateOfRequest + '</p>')
-  })  
+  })
 })
 
 /* GET: all persons */
@@ -71,7 +70,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 /* POST: add new entry */
 app.post('/api/persons', (request, response, next) => {
   console.log('POST: adding entry')
-  
+
   const body = request.body
 
   const person = new Person({
@@ -100,7 +99,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 /* PUT: update an existing entry */
 app.put('/api/persons/:id', (request, response, next) => {
   console.log('PUT: Updating entry')
-  
+
   const body = request.body
 
   const person = {
@@ -108,10 +107,10 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number,
   }
 
-  Person.findByIdAndUpdate(request.params.id, person, 
-    { new: true, 
+  Person.findByIdAndUpdate(request.params.id, person,
+    { new: true,
       runValidators: true,
-      context: 'query' 
+      context: 'query'
     })
     .then(updatedEntry => {
       response.json(updatedEntry.toJSON())
@@ -128,18 +127,18 @@ app.use(unknownEndpoint)
 /* Middleware: custom error handler for wrongly formatted id */
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
-  if (error.name === 'CastError' && error.kind == 'ObjectId') {
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return response.status(400).send({ error: 'incorrect id format' })
   } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message, 
+    return response.status(400).json({ error: error.message,
       errorType: 'ValidationError' })
   } else {
-    return response.status(400).json({ error: 'data does not exist'})
+    return response.status(400).json({ error: 'data does not exist' })
   }
 }
 app.use(errorHandler)
 
-const PORT = process.env.PORT 
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

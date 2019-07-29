@@ -27,7 +27,7 @@ const personSchema = new mongoose.Schema({
     validate: {
       validator: function(v) {
         // From Mongoose validation example + 8 straight digits
-        return (/\d{3}-\d{3}-\d{4}/.test(v) || /\d{8}/.test(v));
+        return (/\d{3}-\d{3}-\d{4}/.test(v) || /\d{8}/.test(v))
       },
       message: props => `${props.value} is not a valid phone number!`
     },
@@ -36,7 +36,7 @@ const personSchema = new mongoose.Schema({
   },
   date: Date
 })
-personSchema.plugin(uniqueValidator);
+personSchema.plugin(uniqueValidator)
 
 personSchema.set('toJSON', {
   transform: (document, returnedObject) => {
