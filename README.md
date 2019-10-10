@@ -1,5 +1,5 @@
 # Phonebook App
-This is a phonbook app created using the MERN stack and is deployed to Heroku.
+This is a phonebook app created using the MERN stack and is deployed to Heroku.
 
 You can interact with the app [here](https://tranquil-plains-34591.herokuapp.com/).
 
